@@ -1,0 +1,293 @@
+{
+  "@@locale": "en",
+  
+  "appName": "ClawChat",
+  "@appName": {
+    "description": "Application name"
+  },
+  
+  "welcome": "Welcome to ClawChat",
+  "@welcome": {
+    "description": "Welcome message"
+  },
+  
+  "welcomeDescription": "Please add an OpenClaw service to get started",
+  "@welcomeDescription": {
+    "description": "Welcome screen description"
+  },
+  
+  "addService": "Add Service",
+  "@addService": {
+    "description": "Button to add a new service"
+  },
+  
+  "settings": "Settings",
+  "@settings": {
+    "description": "Settings menu item"
+  },
+  
+  "serviceList": "Service List",
+  "@serviceList": {
+    "description": "Service list title"
+  },
+  
+  "connect": "Connect",
+  "@connect": {
+    "description": "Connect button"
+  },
+  
+  "disconnect": "Disconnect",
+  "@disconnect": {
+    "description": "Disconnect button"
+  },
+  
+  "connected": "Connected",
+  "@connected": {
+    "description": "Connected status"
+  },
+  
+  "disconnected": "Disconnected",
+  "@disconnected": {
+    "description": "Disconnected status"
+  },
+  
+  "connecting": "Connecting...",
+  "@connecting": {
+    "description": "Connecting status"
+  },
+  
+  "reconnecting": "Reconnecting...",
+  "@reconnecting": {
+    "description": "Reconnecting status"
+  },
+  
+  "connectionError": "Connection Error",
+  "@connectionError": {
+    "description": "Connection error status"
+  },
+  
+  "noMessages": "No messages yet",
+  "@noMessages": {
+    "description": "Empty message list"
+  },
+  
+  "startConversation": "Send a message to start the conversation",
+  "@startConversation": {
+    "description": "Hint to start conversation"
+  },
+  
+  "typeMessage": "Type a message...",
+  "@typeMessage": {
+    "description": "Message input placeholder"
+  },
+  
+  "send": "Send",
+  "@send": {
+    "description": "Send button"
+  },
+  
+  "clearMessages": "Clear Messages",
+  "@clearMessages": {
+    "description": "Clear all messages menu item"
+  },
+  
+  "clearMessagesConfirm": "Are you sure you want to clear all messages? This action cannot be undone.",
+  "@clearMessagesConfirm": {
+    "description": "Clear messages confirmation"
+  },
+  
+  "deleteMessage": "Delete Message",
+  "@deleteMessage": {
+    "description": "Delete message dialog title"
+  },
+  
+  "deleteMessageConfirm": "Are you sure you want to delete this message?",
+  "@deleteMessageConfirm": {
+    "description": "Delete message confirmation"
+  },
+  
+  "delete": "Delete",
+  "@delete": {
+    "description": "Delete button"
+  },
+  
+  "cancel": "Cancel",
+  "@cancel": {
+    "description": "Cancel button"
+  },
+  
+  "clear": "Clear",
+  "@clear": {
+    "description": "Clear button"
+  },
+  
+  "about": "About",
+  "@about": {
+    "description": "About menu item"
+  },
+  
+  "aboutDescription": "OpenClaw multi-service client",
+  "@aboutDescription": {
+    "description": "About dialog description line 1"
+  },
+  
+  "aboutDescription2": "A simple and efficient AI chat application",
+  "@aboutDescription2": {
+    "description": "About dialog description line 2"
+  },
+  
+  "serviceName": "Service Name",
+  "@serviceName": {
+    "description": "Service name field label"
+  },
+  
+  "serviceNameHint": "e.g., My Gateway",
+  "@serviceNameHint": {
+    "description": "Service name field hint"
+  },
+  
+  "websocketUrl": "WebSocket URL",
+  "@websocketUrl": {
+    "description": "WebSocket URL field label"
+  },
+  
+  "websocketUrlHint": "wss://your-gateway.com",
+  "@websocketUrlHint": {
+    "description": "WebSocket URL field hint"
+  },
+  
+  "token": "Token",
+  "@token": {
+    "description": "Token field label"
+  },
+  
+  "tokenHint": "Optional authentication token",
+  "@tokenHint": {
+    "description": "Token field hint"
+  },
+  
+  "save": "Save",
+  "@save": {
+    "description": "Save button"
+  },
+  
+  "edit": "Edit",
+  "@edit": {
+    "description": "Edit button"
+  },
+  
+  "deleteService": "Delete Service",
+  "@deleteService": {
+    "description": "Delete service menu item"
+  },
+  
+  "deleteServiceConfirm": "Are you sure you want to delete this service? All messages will be deleted.",
+  "@deleteServiceConfirm": {
+    "description": "Delete service confirmation"
+  },
+  
+  "noServices": "No services configured",
+  "@noServices": {
+    "description": "Empty service list message"
+  },
+  
+  "addFirstService": "Add your first service to get started",
+  "@addFirstService": {
+    "description": "Empty service list hint"
+  },
+  
+  "pleaseSelectService": "Please select a service first",
+  "@pleaseSelectService": {
+    "description": "No active service message"
+  },
+  
+  "viewServiceList": "Click the button below to view the service list",
+  "@viewServiceList": {
+    "description": "No active service hint"
+  },
+  
+  "notConnected": "Not connected to server",
+  "@notConnected": {
+    "description": "Not connected error message"
+  },
+  
+  "sendFailed": "Failed to send message",
+  "@sendFailed": {
+    "description": "Send message failed error"
+  },
+  
+  "connectionFailed": "Connection failed",
+  "@connectionFailed": {
+    "description": "Connection failed error"
+  },
+  
+  "invalidUrl": "Please enter a valid WebSocket URL",
+  "@invalidUrl": {
+    "description": "Invalid URL error"
+  },
+  
+  "pleaseEnterServiceName": "Please enter a service name",
+  "@pleaseEnterServiceName": {
+    "description": "Empty service name error"
+  },
+  
+  "pleaseEnterWebSocketUrl": "Please enter a WebSocket URL",
+  "@pleaseEnterWebSocketUrl": {
+    "description": "Empty WebSocket URL error"
+  },
+  
+  "validateUrlFormat": "Validate URL Format",
+  "@validateUrlFormat": {
+    "description": "Validate URL button"
+  },
+  
+  "urlValid": "URL format is valid",
+  "@urlValid": {
+    "description": "URL validation success message"
+  },
+  
+  "theme": "Theme",
+  "@theme": {
+    "description": "Theme setting label"
+  },
+  
+  "themeLight": "Light",
+  "@themeLight": {
+    "description": "Light theme option"
+  },
+  
+  "themeDark": "Dark",
+  "@themeDark": {
+    "description": "Dark theme option"
+  },
+  
+  "themeSystem": "System",
+  "@themeSystem": {
+    "description": "System theme option"
+  },
+  
+  "language": "Language",
+  "@language": {
+    "description": "Language setting label"
+  },
+  
+  "languageEnglish": "English",
+  "@languageEnglish": {
+    "description": "English language option"
+  },
+  
+  "languageChinese": "简体中文",
+  "@languageChinese": {
+    "description": "Chinese language option"
+  },
+  
+  "retry": "Retry",
+  "@retry": {
+    "description": "Retry button"
+  },
+  
+  "close": "Close",
+  "@close": {
+    "description": "Close button"
+  }
+}

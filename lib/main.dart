@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'screens/chat_screen.dart';
 import 'screens/settings_screen.dart';
 import 'providers/theme_provider.dart' as providers;
+import 'providers/language_provider.dart';
 import 'providers/service_manager_provider.dart';
 import 'services/storage_service.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 void main() async {
   // 确保 Flutter 绑定初始化
@@ -72,6 +75,7 @@ class _MyAppState extends ConsumerState<MyApp> with WidgetsBindingObserver {
   @override
   Widget build(BuildContext context) {
     final themeState = ref.watch(providers.themeProvider);
+    final languageState = ref.watch(languageProvider);
 
     return MaterialApp(
       title: 'ClawChat',
@@ -79,6 +83,20 @@ class _MyAppState extends ConsumerState<MyApp> with WidgetsBindingObserver {
       theme: providers.AppTheme.lightTheme,
       darkTheme: providers.AppTheme.darkTheme,
       themeMode: _getThemeMode(themeState.mode),
+
+      // 国际化配置
+      localizationsDelegates: const [
+        AppLocalizations.delegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      supportedLocales: const [
+        Locale('en', ''), // English
+        Locale('zh', ''), // Chinese
+      ],
+      locale: languageState.locale, // 使用保存的语言设置
+
       home: const AppHome(),
     );
   }
@@ -115,11 +133,13 @@ class AppHome extends ConsumerWidget {
 }
 
 /// 欢迎页面 - 引导用户添加第一个服务
-class WelcomeScreen extends StatelessWidget {
+class WelcomeScreen extends ConsumerWidget {
   const WelcomeScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context)!;
+    
     return Scaffold(
       body: SafeArea(
         child: Center(
@@ -138,7 +158,7 @@ class WelcomeScreen extends StatelessWidget {
 
                 // 欢迎标题
                 Text(
-                  '欢迎使用 ClawChat',
+                  l10n.welcome,
                   style: Theme.of(context).textTheme.headlineMedium?.copyWith(
                         fontWeight: FontWeight.bold,
                       ),
@@ -148,7 +168,7 @@ class WelcomeScreen extends StatelessWidget {
 
                 // 描述文字
                 Text(
-                  '开始之前，请先添加一个 OpenClaw 服务',
+                  l10n.welcomeDescription,
                   style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                         color: Theme.of(context).colorScheme.onSurfaceVariant,
                       ),
@@ -166,7 +186,7 @@ class WelcomeScreen extends StatelessWidget {
                     );
                   },
                   icon: const Icon(Icons.add),
-                  label: const Text('添加服务'),
+                  label: Text(l10n.addService),
                   style: FilledButton.styleFrom(
                     padding: const EdgeInsets.symmetric(
                       horizontal: 32,
@@ -181,4 +201,5 @@ class WelcomeScreen extends StatelessWidget {
       ),
     );
   }
+}
 }
