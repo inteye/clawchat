@@ -202,4 +202,3 @@ class WelcomeScreen extends ConsumerWidget {
     );
   }
 }
-}
