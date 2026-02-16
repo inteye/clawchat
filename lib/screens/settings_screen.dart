@@ -5,6 +5,7 @@ library;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../models/service_config.dart';
 import '../providers/service_manager_provider.dart';
 import '../utils/connection_diagnostics.dart';
@@ -67,11 +68,12 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
 
   /// 测试连接
   Future<void> _testConnection() async {
+    final l10n = AppLocalizations.of(context)!;
     final url = _wsUrlController.text.trim();
     if (url.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('请先输入 WebSocket URL'),
+        SnackBar(
+          content: Text(l10n.pleaseEnterWebSocketUrl),
           backgroundColor: Colors.orange,
         ),
       );
@@ -82,7 +84,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     final urlError = ConnectionDiagnostics.validateUrl(url);
     if (urlError != null) {
       setState(() {
-        _testResult = '❌ $urlError';
+        _testResult = l10n.validationFailedWithError(urlError);
       });
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -102,13 +104,13 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
       // 显示 URL 解析信息
       final parsed = ConnectionDiagnostics.parseUrl(url);
       final buffer = StringBuffer();
-      buffer.writeln('✅ URL 格式正确');
-      buffer.writeln('协议: ${parsed['scheme']}');
-      buffer.writeln('主机: ${parsed['host']}');
-      buffer.writeln('端口: ${parsed['port']}');
-      buffer.writeln('路径: ${parsed['path']}');
+      buffer.writeln(l10n.urlFormatCorrect);
+      buffer.writeln('${l10n.protocol}: ${parsed['scheme']}');
+      buffer.writeln('${l10n.host}: ${parsed['host']}');
+      buffer.writeln('${l10n.port}: ${parsed['port']}');
+      buffer.writeln('${l10n.path}: ${parsed['path']}');
       if (parsed['hasToken'] == true) {
-        buffer.writeln('包含 Token: 是');
+        buffer.writeln('${l10n.containsToken}: ${l10n.yes}');
       }
 
       setState(() {
@@ -119,21 +121,21 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
 
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('URL 格式验证通过\n提示：实际连接测试需要在聊天页面进行'),
+          content: Text(l10n.urlValidSuccess),
           backgroundColor: Colors.green,
           duration: const Duration(seconds: 3),
         ),
       );
     } catch (e) {
       setState(() {
-        _testResult = '❌ 验证失败: $e';
+        _testResult = l10n.validationFailedWithError(e.toString());
       });
 
       if (!mounted) return;
 
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('验证失败: $e'),
+          content: Text('${l10n.validationFailed}: $e'),
           backgroundColor: Colors.red,
         ),
       );
@@ -152,6 +154,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
       return;
     }
 
+    final l10n = AppLocalizations.of(context)!;
     setState(() => _isSaving = true);
 
     try {
@@ -171,14 +174,15 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
 
         if (success) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('服务更新成功'),
+            SnackBar(
+              content: Text(l10n.serviceUpdatedSuccess),
               backgroundColor: Colors.green,
             ),
           );
           Navigator.of(context).pop();
         } else {
-          final error = ref.read(serviceManagerProvider).error ?? '更新失败';
+          final error =
+              ref.read(serviceManagerProvider).error ?? l10n.updateFailed;
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(error),
@@ -206,14 +210,15 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
           }
 
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('服务添加成功'),
+            SnackBar(
+              content: Text(l10n.serviceAddedSuccess),
               backgroundColor: Colors.green,
             ),
           );
           Navigator.of(context).pop();
         } else {
-          final error = ref.read(serviceManagerProvider).error ?? '添加失败';
+          final error =
+              ref.read(serviceManagerProvider).error ?? l10n.addFailed;
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(error),
@@ -268,12 +273,13 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
     final isEditing = widget.editingService != null;
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(isEditing ? '编辑服务' : '添加服务'),
+        title: Text(isEditing ? l10n.editService : l10n.addService),
         centerTitle: true,
       ),
       body: Form(
@@ -290,7 +296,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               ),
               const SizedBox(height: 16),
               Text(
-                '添加 OpenClaw 服务',
+                l10n.addOpenClawService,
                 style: theme.textTheme.headlineSmall?.copyWith(
                   fontWeight: FontWeight.bold,
                 ),
@@ -298,7 +304,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               ),
               const SizedBox(height: 8),
               Text(
-                '请填写服务连接信息',
+                l10n.fillServiceInfo,
                 style: theme.textTheme.bodyMedium?.copyWith(
                   color: theme.colorScheme.onSurface.withOpacity(0.6),
                 ),
@@ -315,7 +321,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      '服务信息',
+                      l10n.serviceInfo,
                       style: theme.textTheme.titleMedium?.copyWith(
                         fontWeight: FontWeight.bold,
                       ),
@@ -325,15 +331,15 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                     // 服务名称
                     TextFormField(
                       controller: _nameController,
-                      decoration: const InputDecoration(
-                        labelText: '服务名称',
-                        hintText: '例如：我的 OpenClaw',
-                        prefixIcon: Icon(Icons.label_outline),
-                        helperText: '用于识别不同的服务',
+                      decoration: InputDecoration(
+                        labelText: l10n.serviceName,
+                        hintText: l10n.serviceNameHint,
+                        prefixIcon: const Icon(Icons.label_outline),
+                        helperText: l10n.serviceNameHelper,
                       ),
                       validator: (value) {
                         if (value == null || value.trim().isEmpty) {
-                          return '请输入服务名称';
+                          return l10n.pleaseEnterServiceName;
                         }
                         return null;
                       },
@@ -343,28 +349,25 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                     // WebSocket URL
                     TextFormField(
                       controller: _wsUrlController,
-                      decoration: const InputDecoration(
-                        labelText: 'WebSocket URL',
-                        hintText: 'https://your-machine.tailnet.ts.net',
-                        prefixIcon: Icon(Icons.link),
-                        helperText:
-                            'Tailscale: https://machine.tailnet.ts.net\n'
-                            'Tailnet IP: ws://100.x.x.x:18789\n'
-                            '注意：不要在 URL 中包含 token 参数',
+                      decoration: InputDecoration(
+                        labelText: l10n.websocketUrl,
+                        hintText: l10n.websocketUrlHint,
+                        prefixIcon: const Icon(Icons.link),
+                        helperText: l10n.websocketUrlHelper,
                         helperMaxLines: 3,
                       ),
                       keyboardType: TextInputType.url,
                       onChanged: (value) => _updateUrlInfo(),
                       validator: (value) {
                         if (value == null || value.trim().isEmpty) {
-                          return '请输入 WebSocket URL';
+                          return l10n.pleaseEnterWebSocketUrl;
                         }
                         final trimmed = value.trim();
                         if (!trimmed.startsWith('ws://') &&
                             !trimmed.startsWith('wss://') &&
                             !trimmed.startsWith('http://') &&
                             !trimmed.startsWith('https://')) {
-                          return 'URL 必须以 ws://, wss://, http:// 或 https:// 开头';
+                          return l10n.urlMustStartWith;
                         }
                         return null;
                       },
@@ -395,7 +398,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                                 ),
                                 const SizedBox(width: 8),
                                 Text(
-                                  'URL 解析信息',
+                                  l10n.urlParseInfo,
                                   style: theme.textTheme.labelMedium?.copyWith(
                                     fontWeight: FontWeight.bold,
                                     color: theme.colorScheme.primary,
@@ -404,19 +407,28 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                               ],
                             ),
                             const SizedBox(height: 8),
-                            _buildInfoRow('协议', _urlInfo!['scheme'], theme),
-                            _buildInfoRow('主机', _urlInfo!['host'], theme),
                             _buildInfoRow(
-                                '端口', _urlInfo!['port'].toString(), theme),
-                            _buildInfoRow('路径', _urlInfo!['path'], theme),
+                              l10n.protocol,
+                              _urlInfo!['scheme'],
+                              theme,
+                            ),
+                            _buildInfoRow(l10n.host, _urlInfo!['host'], theme),
                             _buildInfoRow(
-                              '安全连接',
-                              _urlInfo!['isSecure'] ? '是 (wss)' : '否 (ws)',
+                              l10n.port,
+                              _urlInfo!['port'].toString(),
+                              theme,
+                            ),
+                            _buildInfoRow(l10n.path, _urlInfo!['path'], theme),
+                            _buildInfoRow(
+                              l10n.secureConnection,
+                              _urlInfo!['isSecure']
+                                  ? '${l10n.yes} (wss)'
+                                  : '${l10n.no} (ws)',
                               theme,
                             ),
                             _buildInfoRow(
-                              '包含 Token',
-                              _urlInfo!['hasToken'] ? '是' : '否',
+                              l10n.containsToken,
+                              _urlInfo!['hasToken'] ? l10n.yes : l10n.no,
                               theme,
                             ),
                           ],
@@ -438,7 +450,9 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                                     CircularProgressIndicator(strokeWidth: 2),
                               )
                             : const Icon(Icons.wifi_find),
-                        label: Text(_isTesting ? '验证中...' : '验证 URL 格式'),
+                        label: Text(
+                          _isTesting ? l10n.validating : l10n.validateUrlFormat,
+                        ),
                         style: OutlinedButton.styleFrom(
                           padding: const EdgeInsets.symmetric(vertical: 12),
                         ),
@@ -476,8 +490,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                     TextFormField(
                       controller: _tokenController,
                       decoration: InputDecoration(
-                        labelText: 'Token/Password',
-                        hintText: '认证凭证',
+                        labelText: l10n.tokenPassword,
+                        hintText: l10n.authCredentials,
                         prefixIcon: const Icon(Icons.vpn_key),
                         suffixIcon: IconButton(
                           icon: Icon(
@@ -489,16 +503,14 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                             setState(() => _obscureToken = !_obscureToken);
                           },
                         ),
-                        helperText: '用于 challenge-response 认证\n'
-                            '服务器会发送 challenge，客户端用 token 签名响应\n'
-                            'Tailscale Serve 可选，Funnel 必填',
+                        helperText: l10n.tokenHelperText,
                         helperMaxLines: 3,
                       ),
                       obscureText: _obscureToken,
                       validator: (value) {
                         // Token 是必需的（用于 challenge-response 认证）
                         if (value == null || value.trim().isEmpty) {
-                          return '请输入认证 Token（用于签名 challenge）';
+                          return l10n.pleaseEnterToken;
                         }
                         return null;
                       },
@@ -530,7 +542,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                   const SizedBox(width: 8),
                   Expanded(
                     child: Text(
-                      '服务配置保存后，您可以在服务列表中切换使用不同的服务。',
+                      l10n.serviceConfigNote,
                       style: theme.textTheme.bodySmall?.copyWith(
                         color: theme.colorScheme.onSurface.withOpacity(0.7),
                       ),
@@ -554,7 +566,11 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                       ),
                     )
                   : const Icon(Icons.save),
-              label: Text(_isSaving ? '保存中...' : (isEditing ? '保存修改' : '添加服务')),
+              label: Text(
+                _isSaving
+                    ? l10n.saving
+                    : (isEditing ? l10n.saveChanges : l10n.addService),
+              ),
               style: FilledButton.styleFrom(
                 padding: const EdgeInsets.symmetric(vertical: 16),
               ),

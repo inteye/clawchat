@@ -485,6 +485,19 @@ class WebSocketService {
       print('📨 完整消息内容: ${jsonEncode(message)}');
     }
 
+    // 过滤 HEARTBEAT 消息
+    if (type == 'event' && event == 'agent') {
+      final payload = message['payload'] as Map<String, dynamic>?;
+      final data = payload?['data'] as Map<String, dynamic>?;
+      final text = data?['text'] as String?;
+
+      // 如果是 HEARTBEAT 消息，直接返回不处理
+      if (text != null && text.startsWith('HEARTBEAT')) {
+        print('💓 收到 HEARTBEAT 消息，已过滤');
+        return;
+      }
+    }
+
     // 处理 Gateway 心跳事件（health, tick）
     if (type == ProtocolConstants.typeEvent) {
       if (event == 'health' || event == 'tick') {

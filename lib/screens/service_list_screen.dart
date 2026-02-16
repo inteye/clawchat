@@ -5,6 +5,7 @@ library;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../models/service_config.dart';
 import '../providers/service_manager_provider.dart';
 import 'settings_screen.dart';
@@ -16,27 +17,28 @@ class ServiceListScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final serviceManager = ref.watch(serviceManagerProvider);
+    final l10n = AppLocalizations.of(context)!;
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('服务列表'),
+        title: Text(l10n.serviceList),
         centerTitle: true,
       ),
       body: serviceManager.isLoading
           ? const Center(child: CircularProgressIndicator())
           : serviceManager.services.isEmpty
-              ? _buildEmptyState(context)
-              : _buildServiceList(context, ref, serviceManager),
+              ? _buildEmptyState(context, l10n)
+              : _buildServiceList(context, ref, serviceManager, l10n),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () => _addService(context),
         icon: const Icon(Icons.add),
-        label: const Text('添加服务'),
+        label: Text(l10n.addService),
       ),
     );
   }
 
   /// 构建空状态
-  Widget _buildEmptyState(BuildContext context) {
+  Widget _buildEmptyState(BuildContext context, AppLocalizations l10n) {
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -48,12 +50,12 @@ class ServiceListScreen extends ConsumerWidget {
           ),
           const SizedBox(height: 16),
           Text(
-            '还没有添加服务',
+            l10n.noServices,
             style: Theme.of(context).textTheme.titleLarge,
           ),
           const SizedBox(height: 8),
           Text(
-            '点击下方按钮添加第一个服务',
+            l10n.addFirstService,
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                   color: Theme.of(context).colorScheme.onSurfaceVariant,
                 ),
@@ -68,6 +70,7 @@ class ServiceListScreen extends ConsumerWidget {
     BuildContext context,
     WidgetRef ref,
     ServiceManagerState serviceManager,
+    AppLocalizations l10n,
   ) {
     return ListView.builder(
       padding: const EdgeInsets.all(16),
@@ -122,7 +125,7 @@ class ServiceListScreen extends ConsumerWidget {
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: Text(
-                      '当前使用',
+                      l10n.currentlyActive,
                       style: Theme.of(context).textTheme.labelSmall?.copyWith(
                             color: Theme.of(context)
                                 .colorScheme
@@ -140,34 +143,34 @@ class ServiceListScreen extends ConsumerWidget {
                     _editService(context, service);
                     break;
                   case 'delete':
-                    _deleteService(context, ref, service);
+                    _deleteService(context, ref, service, l10n);
                     break;
                 }
               },
               itemBuilder: (context) => [
-                const PopupMenuItem(
+                PopupMenuItem(
                   value: 'edit',
                   child: Row(
                     children: [
-                      Icon(Icons.edit),
-                      SizedBox(width: 8),
-                      Text('编辑'),
+                      const Icon(Icons.edit),
+                      const SizedBox(width: 8),
+                      Text(l10n.edit),
                     ],
                   ),
                 ),
-                const PopupMenuItem(
+                PopupMenuItem(
                   value: 'delete',
                   child: Row(
                     children: [
-                      Icon(Icons.delete),
-                      SizedBox(width: 8),
-                      Text('删除'),
+                      const Icon(Icons.delete),
+                      const SizedBox(width: 8),
+                      Text(l10n.delete),
                     ],
                   ),
                 ),
               ],
             ),
-            onTap: () => _switchService(context, ref, service),
+            onTap: () => _switchService(context, ref, service, l10n),
             onLongPress: () => _editService(context, service),
           ),
         );
@@ -180,6 +183,7 @@ class ServiceListScreen extends ConsumerWidget {
     BuildContext context,
     WidgetRef ref,
     ServiceConfig service,
+    AppLocalizations l10n,
   ) async {
     final notifier = ref.read(serviceManagerProvider.notifier);
     final success = await notifier.setActiveService(service.id);
@@ -187,12 +191,12 @@ class ServiceListScreen extends ConsumerWidget {
     if (context.mounted) {
       if (success) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('已切换到 ${service.name}')),
+          SnackBar(content: Text(l10n.switchedToService(service.name))),
         );
         Navigator.of(context).pop();
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('切换服务失败')),
+          SnackBar(content: Text(l10n.switchServiceFailed)),
         );
       }
     }
@@ -221,23 +225,24 @@ class ServiceListScreen extends ConsumerWidget {
     BuildContext context,
     WidgetRef ref,
     ServiceConfig service,
+    AppLocalizations l10n,
   ) async {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('删除服务'),
-        content: Text('确定要删除服务 "${service.name}" 吗？\n\n此操作无法撤销。'),
+        title: Text(l10n.deleteService),
+        content: Text(l10n.deleteServiceMessage(service.name)),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(false),
-            child: const Text('取消'),
+            child: Text(l10n.cancel),
           ),
           FilledButton(
             onPressed: () => Navigator.of(context).pop(true),
             style: FilledButton.styleFrom(
               backgroundColor: Theme.of(context).colorScheme.error,
             ),
-            child: const Text('删除'),
+            child: Text(l10n.delete),
           ),
         ],
       ),
@@ -250,11 +255,11 @@ class ServiceListScreen extends ConsumerWidget {
       if (context.mounted) {
         if (success) {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('已删除 ${service.name}')),
+            SnackBar(content: Text(l10n.deletedService(service.name))),
           );
         } else {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('删除服务失败')),
+            SnackBar(content: Text(l10n.deleteServiceFailedMessage)),
           );
         }
       }

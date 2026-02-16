@@ -126,12 +126,12 @@
     "description": "About menu item"
   },
   
-  "aboutDescription": "OpenClaw multi-service client",
+  "aboutDescription": "Direct connection to OpenClaw Gateway",
   "@aboutDescription": {
     "description": "About dialog description line 1"
   },
   
-  "aboutDescription2": "A simple and efficient AI chat application",
+  "aboutDescription2": "Manage multiple OpenClaw services in one place",
   "@aboutDescription2": {
     "description": "About dialog description line 2"
   },
@@ -289,5 +289,219 @@
   "close": "Close",
   "@close": {
     "description": "Close button"
+  },
+  
+  "currentlyActive": "Currently Active",
+  "@currentlyActive": {
+    "description": "Label for currently active service"
+  },
+  
+  "switchServiceFailed": "Failed to switch service",
+  "@switchServiceFailed": {
+    "description": "Error message when switching service fails"
+  },
+  
+  "switchedToService": "Switched to {serviceName}",
+  "@switchedToService": {
+    "description": "Success message when switching service",
+    "placeholders": {
+      "serviceName": {
+        "type": "String",
+        "example": "My Gateway"
+      }
+    }
+  },
+  
+  "deletedService": "Deleted {serviceName}",
+  "@deletedService": {
+    "description": "Success message when deleting service",
+    "placeholders": {
+      "serviceName": {
+        "type": "String",
+        "example": "My Gateway"
+      }
+    }
+  },
+  
+  "deleteServiceFailedMessage": "Failed to delete service",
+  "@deleteServiceFailedMessage": {
+    "description": "Error message when deleting service fails"
+  },
+  
+  "deleteServiceMessage": "Are you sure you want to delete service \"{serviceName}\"?\n\nThis action cannot be undone.",
+  "@deleteServiceMessage": {
+    "description": "Confirmation message for deleting service",
+    "placeholders": {
+      "serviceName": {
+        "type": "String",
+        "example": "My Gateway"
+      }
+    }
+  },
+  
+  "serviceNameHelper": "Used to identify different services",
+  "@serviceNameHelper": {
+    "description": "Service name helper text"
+  },
+  
+  "validationFailed": "Validation failed",
+  "@validationFailed": {
+    "description": "Validation failed message"
+  },
+  
+  "serviceAddedSuccess": "Service added successfully",
+  "@serviceAddedSuccess": {
+    "description": "Service added success message"
+  },
+  
+  "serviceUpdatedSuccess": "Service updated successfully",
+  "@serviceUpdatedSuccess": {
+    "description": "Service updated success message"
+  },
+  
+  "addFailed": "Failed to add",
+  "@addFailed": {
+    "description": "Add failed error message"
+  },
+  
+  "updateFailed": "Failed to update",
+  "@updateFailed": {
+    "description": "Update failed error message"
+  },
+  
+  "editService": "Edit Service",
+  "@editService": {
+    "description": "Edit service title"
+  },
+  
+  "addOpenClawService": "Add OpenClaw Service",
+  "@addOpenClawService": {
+    "description": "Add service header"
+  },
+  
+  "fillServiceInfo": "Please fill in the service connection information",
+  "@fillServiceInfo": {
+    "description": "Service form description"
+  },
+  
+  "serviceInfo": "Service Information",
+  "@serviceInfo": {
+    "description": "Service info section title"
+  },
+  
+  "urlParseInfo": "URL Parse Information",
+  "@urlParseInfo": {
+    "description": "URL parse info title"
+  },
+  
+  "protocol": "Protocol",
+  "@protocol": {
+    "description": "Protocol label"
+  },
+  
+  "host": "Host",
+  "@host": {
+    "description": "Host label"
+  },
+  
+  "port": "Port",
+  "@port": {
+    "description": "Port label"
+  },
+  
+  "path": "Path",
+  "@path": {
+    "description": "Path label"
+  },
+  
+  "secureConnection": "Secure Connection",
+  "@secureConnection": {
+    "description": "Secure connection label"
+  },
+  
+  "yes": "Yes",
+  "@yes": {
+    "description": "Yes option"
+  },
+  
+  "no": "No",
+  "@no": {
+    "description": "No option"
+  },
+  
+  "containsToken": "Contains Token",
+  "@containsToken": {
+    "description": "Contains token label"
+  },
+  
+  "validating": "Validating...",
+  "@validating": {
+    "description": "Validating status"
+  },
+  
+  "urlValidSuccess": "URL format validation passed\nNote: Actual connection test needs to be done on the chat page",
+  "@urlValidSuccess": {
+    "description": "URL validation success with note"
+  },
+  
+  "tokenPassword": "Token/Password",
+  "@tokenPassword": {
+    "description": "Token/Password field label"
+  },
+  
+  "authCredentials": "Authentication credentials",
+  "@authCredentials": {
+    "description": "Auth credentials hint"
+  },
+  
+  "tokenHelperText": "Used for challenge-response authentication\nServer sends challenge, client signs response with token\nOptional for Tailscale Serve, required for Funnel",
+  "@tokenHelperText": {
+    "description": "Token helper text"
+  },
+  
+  "pleaseEnterToken": "Please enter authentication token (used to sign challenge)",
+  "@pleaseEnterToken": {
+    "description": "Empty token error"
+  },
+  
+  "serviceConfigNote": "After saving the service configuration, you can switch between different services in the service list.",
+  "@serviceConfigNote": {
+    "description": "Service config note"
+  },
+  
+  "saving": "Saving...",
+  "@saving": {
+    "description": "Saving status"
+  },
+  
+  "saveChanges": "Save Changes",
+  "@saveChanges": {
+    "description": "Save changes button"
+  },
+  
+  "urlMustStartWith": "URL must start with ws://, wss://, http:// or https://",
+  "@urlMustStartWith": {
+    "description": "URL format error"
+  },
+  
+  "websocketUrlHelper": "Tailscale: https://machine.tailnet.ts.net\nTailnet IP: ws://100.x.x.x:18789\nNote: Do not include token parameter in URL",
+  "@websocketUrlHelper": {
+    "description": "WebSocket URL helper text"
+  },
+  
+  "urlFormatCorrect": "✅ URL format is correct",
+  "@urlFormatCorrect": {
+    "description": "URL format correct message"
+  },
+  
+  "validationFailedWithError": "❌ Validation failed: {error}",
+  "@validationFailedWithError": {
+    "description": "Validation failed with error message",
+    "placeholders": {
+      "error": {
+        "type": "String",
+        "example": "Invalid URL"
+      }
+    }
   }
 }

@@ -4,6 +4,7 @@
 library;
 
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class MessageInput extends StatefulWidget {
   final Function(String) onSend;
@@ -56,6 +57,7 @@ class _MessageInputState extends State<MessageInput> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final l10n = AppLocalizations.of(context)!;
 
     return Container(
       decoration: BoxDecoration(
@@ -89,7 +91,7 @@ class _MessageInputState extends State<MessageInput> {
                     minLines: 1,
                     textInputAction: TextInputAction.newline,
                     decoration: InputDecoration(
-                      hintText: widget.enabled ? '输入消息...' : '未连接',
+                      hintText: widget.enabled ? l10n.typeMessage : l10n.notConnected,
                       border: InputBorder.none,
                       contentPadding: const EdgeInsets.only(
                         left: 20,

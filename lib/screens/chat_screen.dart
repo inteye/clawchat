@@ -5,8 +5,10 @@ library;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../providers/chat_session_provider.dart';
 import '../providers/service_manager_provider.dart';
+import '../providers/language_provider.dart';
 import '../models/message.dart';
 import 'settings_screen.dart';
 import 'service_list_screen.dart';
@@ -115,22 +117,24 @@ class _ChatScreenState extends ConsumerState<ChatScreen>
 
   /// 删除消息
   Future<void> _deleteMessage(String messageId) async {
+    final l10n = AppLocalizations.of(context)!;
+
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('删除消息'),
-        content: const Text('确定要删除这条消息吗？'),
+        title: Text(l10n.deleteMessage),
+        content: Text(l10n.deleteMessageConfirm),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(false),
-            child: const Text('取消'),
+            child: Text(l10n.cancel),
           ),
           FilledButton(
             onPressed: () => Navigator.of(context).pop(true),
             style: FilledButton.styleFrom(
               backgroundColor: Theme.of(context).colorScheme.error,
             ),
-            child: const Text('删除'),
+            child: Text(l10n.delete),
           ),
         ],
       ),
@@ -149,22 +153,24 @@ class _ChatScreenState extends ConsumerState<ChatScreen>
 
   /// 清空所有消息
   Future<void> _clearAllMessages() async {
+    final l10n = AppLocalizations.of(context)!;
+
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('清空消息'),
-        content: const Text('确定要清空所有消息吗？此操作不可恢复。'),
+        title: Text(l10n.clearMessages),
+        content: Text(l10n.clearMessagesConfirm),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(false),
-            child: const Text('取消'),
+            child: Text(l10n.cancel),
           ),
           FilledButton(
             onPressed: () => Navigator.of(context).pop(true),
             style: FilledButton.styleFrom(
               backgroundColor: Theme.of(context).colorScheme.error,
             ),
-            child: const Text('清空'),
+            child: Text(l10n.clear),
           ),
         ],
       ),
@@ -201,6 +207,8 @@ class _ChatScreenState extends ConsumerState<ChatScreen>
 
   /// 显示菜单
   void _showMenu() {
+    final l10n = AppLocalizations.of(context)!;
+
     showModalBottomSheet(
       context: context,
       builder: (context) => SafeArea(
@@ -208,16 +216,16 @@ class _ChatScreenState extends ConsumerState<ChatScreen>
           mainAxisSize: MainAxisSize.min,
           children: [
             ListTile(
-              leading: const Icon(Icons.settings),
-              title: const Text('设置'),
+              leading: const Icon(Icons.language),
+              title: Text(l10n.language),
               onTap: () {
                 Navigator.of(context).pop();
-                _showSettings();
+                _showLanguageDialog();
               },
             ),
             ListTile(
               leading: const Icon(Icons.delete_sweep),
-              title: const Text('清空消息'),
+              title: Text(l10n.clearMessages),
               onTap: () {
                 Navigator.of(context).pop();
                 _clearAllMessages();
@@ -225,7 +233,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen>
             ),
             ListTile(
               leading: const Icon(Icons.info_outline),
-              title: const Text('关于'),
+              title: Text(l10n.about),
               onTap: () {
                 Navigator.of(context).pop();
                 _showAboutDialog();
@@ -237,11 +245,60 @@ class _ChatScreenState extends ConsumerState<ChatScreen>
     );
   }
 
+  /// 显示语言选择对话框
+  void _showLanguageDialog() {
+    final l10n = AppLocalizations.of(context)!;
+
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(l10n.language),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ListTile(
+              title: Text(l10n.languageEnglish),
+              leading: Radio<String>(
+                value: 'en',
+                groupValue: ref.read(languageProvider).locale.languageCode,
+                onChanged: (value) {
+                  ref.read(languageProvider.notifier).setEnglish();
+                  Navigator.of(context).pop();
+                },
+              ),
+              onTap: () {
+                ref.read(languageProvider.notifier).setEnglish();
+                Navigator.of(context).pop();
+              },
+            ),
+            ListTile(
+              title: Text(l10n.languageChinese),
+              leading: Radio<String>(
+                value: 'zh',
+                groupValue: ref.read(languageProvider).locale.languageCode,
+                onChanged: (value) {
+                  ref.read(languageProvider.notifier).setChinese();
+                  Navigator.of(context).pop();
+                },
+              ),
+              onTap: () {
+                ref.read(languageProvider.notifier).setChinese();
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   /// 显示关于对话框
   void _showAboutDialog() {
+    final l10n = AppLocalizations.of(context)!;
+
     showAboutDialog(
       context: context,
-      applicationName: 'ClawChat',
+      applicationName: l10n.appName,
       applicationVersion: '0.1.0',
       applicationIcon: ClipRRect(
         borderRadius: BorderRadius.circular(16),
@@ -252,9 +309,9 @@ class _ChatScreenState extends ConsumerState<ChatScreen>
         ),
       ),
       children: [
-        const Text('OpenClaw 多服务客户端'),
+        Text(l10n.aboutDescription),
         const SizedBox(height: 8),
-        const Text('一个简洁、高效的 AI 聊天应用'),
+        Text(l10n.aboutDescription2),
       ],
     );
   }
@@ -277,6 +334,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen>
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final serviceManager = ref.watch(serviceManagerProvider);
 
     // 如果没有激活的服务，显示提示
@@ -303,7 +361,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen>
         leading: IconButton(
           icon: const Icon(Icons.menu),
           onPressed: _showServiceList,
-          tooltip: '服务列表',
+          tooltip: l10n.serviceList,
         ),
         title: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -329,7 +387,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen>
                     .connect();
               }
             },
-            tooltip: session.isConnected ? '断开连接' : '连接',
+            tooltip: session.isConnected ? l10n.disconnect : l10n.connect,
           ),
           // 菜单按钮
           IconButton(
@@ -352,16 +410,21 @@ class _ChatScreenState extends ConsumerState<ChatScreen>
                   const SizedBox(width: 8),
                   Expanded(
                     child: Text(
-                      session.connectionState.error!,
+                      session.connectionState.error ?? 'Unknown error',
                       style: TextStyle(color: Colors.red.shade900),
                     ),
                   ),
                   IconButton(
                     icon: Icon(Icons.close, color: Colors.red.shade900),
                     onPressed: () {
-                      ref
-                          .read(chatSessionProvider(activeServiceId).notifier)
-                          .clearError();
+                      final serviceManager = ref.read(serviceManagerProvider);
+                      if (serviceManager.hasActiveService) {
+                        ref
+                            .read(chatSessionProvider(
+                                    serviceManager.activeServiceId!)
+                                .notifier)
+                            .clearError();
+                      }
                     },
                   ),
                 ],
@@ -387,9 +450,11 @@ class _ChatScreenState extends ConsumerState<ChatScreen>
 
   /// 构建无服务状态
   Widget _buildNoServiceState(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     return Scaffold(
       appBar: AppBar(
-        title: const Text('ClawChat'),
+        title: Text(l10n.appName),
         actions: [
           IconButton(
             icon: const Icon(Icons.settings),
@@ -408,12 +473,12 @@ class _ChatScreenState extends ConsumerState<ChatScreen>
             ),
             const SizedBox(height: 16),
             Text(
-              '请先选择一个服务',
+              l10n.pleaseSelectService,
               style: Theme.of(context).textTheme.titleLarge,
             ),
             const SizedBox(height: 8),
             Text(
-              '点击下方按钮查看服务列表',
+              l10n.viewServiceList,
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                     color: Theme.of(context).colorScheme.onSurfaceVariant,
                   ),
@@ -422,7 +487,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen>
             FilledButton.icon(
               onPressed: _showServiceList,
               icon: const Icon(Icons.list),
-              label: const Text('服务列表'),
+              label: Text(l10n.serviceList),
             ),
           ],
         ),
@@ -432,6 +497,8 @@ class _ChatScreenState extends ConsumerState<ChatScreen>
 
   /// 构建空状态
   Widget _buildEmptyState(ThemeData theme) {
+    final l10n = AppLocalizations.of(context)!;
+
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -443,14 +510,14 @@ class _ChatScreenState extends ConsumerState<ChatScreen>
           ),
           const SizedBox(height: 16),
           Text(
-            '还没有消息',
+            l10n.noMessages,
             style: theme.textTheme.titleLarge?.copyWith(
               color: theme.colorScheme.onSurface.withOpacity(0.5),
             ),
           ),
           const SizedBox(height: 8),
           Text(
-            '发送一条消息开始对话吧',
+            l10n.startConversation,
             style: theme.textTheme.bodyMedium?.copyWith(
               color: theme.colorScheme.onSurface.withOpacity(0.4),
             ),

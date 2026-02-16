@@ -4,6 +4,7 @@
 library;
 
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../models/connection_state.dart';
 
 class ConnectionIndicator extends StatelessWidget {
@@ -17,6 +18,7 @@ class ConnectionIndicator extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final l10n = AppLocalizations.of(context)!;
 
     return Row(
       mainAxisSize: MainAxisSize.min,
@@ -34,7 +36,7 @@ class ConnectionIndicator extends StatelessWidget {
 
         // 状态文本
         Text(
-          _getStatusText(),
+          _getStatusText(l10n),
           style: theme.textTheme.bodySmall?.copyWith(
             color: theme.colorScheme.onSurface.withOpacity(0.7),
           ),
@@ -63,21 +65,21 @@ class ConnectionIndicator extends StatelessWidget {
   }
 
   /// 获取状态文本
-  String _getStatusText() {
+  String _getStatusText(AppLocalizations l10n) {
     switch (status) {
       case ConnectionStatus.connected:
       case ConnectionStatus.authenticated:
-        return '已连接';
+        return l10n.connected;
       case ConnectionStatus.connecting:
-        return '连接中...';
+        return l10n.connecting;
       case ConnectionStatus.disconnected:
-        return '未连接';
+        return l10n.disconnected;
       case ConnectionStatus.reconnecting:
-        return '重连中...';
+        return l10n.reconnecting;
       case ConnectionStatus.authenticating:
-        return '认证中...';
+        return l10n.connecting; // 使用 connecting 代替
       case ConnectionStatus.error:
-        return '连接错误';
+        return l10n.connectionError;
     }
   }
 }
