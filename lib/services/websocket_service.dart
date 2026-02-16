@@ -86,7 +86,8 @@ class WebSocketService {
 
     _config = config;
     _isManualDisconnect = false;
-    _reconnectAttempts = 0;
+    _reconnectAttempts = 0; // 重置重连计数
+    _reconnectTimer?.cancel(); // 取消任何待处理的重连
 
     await _performConnect();
   }
@@ -637,6 +638,9 @@ class WebSocketService {
 
   /// 处理断开连接
   void _handleDisconnect() {
+    print(
+        '🔌 处理断开连接: isManualDisconnect=$_isManualDisconnect, autoReconnect=${_config?.autoReconnect}');
+
     _heartbeatTimer?.cancel();
     _channel = null;
 
@@ -645,7 +649,10 @@ class WebSocketService {
 
     // 如果不是手动断开且启用了自动重连，则尝试重连
     if (!_isManualDisconnect && _config?.autoReconnect == true) {
+      print('🔄 准备自动重连...');
       _scheduleReconnect();
+    } else {
+      print('⏸️  不进行自动重连');
     }
   }
 
@@ -656,34 +663,48 @@ class WebSocketService {
     _reconnectAttempts++;
 
     if (_reconnectAttempts > _config!.maxReconnectAttempts) {
-      print('达到最大重连次数，停止重连');
+      print('❌ 达到最大重连次数 ($_reconnectAttempts)，停止重连');
       _eventController?.add(
         const WebSocketEvent(WebSocketEventType.error, '连接失败，已达到最大重连次数'),
       );
       return;
     }
 
-    // 指数退避
-    final delay = _config!.reconnectInterval * _reconnectAttempts;
+    // 指数退避：基础延迟 * 2^(尝试次数-1)，最大 30 秒
+    final baseDelay = _config!.reconnectInterval;
+    final exponentialDelay = baseDelay * (1 << (_reconnectAttempts - 1));
+    final delay = exponentialDelay > 30000 ? 30000 : exponentialDelay;
+
     print(
-        '将在 ${delay}ms 后重连 (尝试 $_reconnectAttempts/${_config!.maxReconnectAttempts})');
+        '🔄 将在 ${delay}ms 后重连 (尝试 $_reconnectAttempts/${_config!.maxReconnectAttempts})');
 
     _reconnectTimer?.cancel();
     _reconnectTimer = Timer(Duration(milliseconds: delay), () {
       if (!_isManualDisconnect) {
+        print('⏰ 重连定时器触发，开始重连...');
         _performConnect();
+      } else {
+        print('⏸️  手动断开，取消重连');
       }
     });
   }
 
   /// 断开连接
   Future<void> disconnect() async {
+    print('🔌 WebSocketService.disconnect() 被调用');
     _isManualDisconnect = true;
     _reconnectTimer?.cancel();
     _heartbeatTimer?.cancel();
 
-    await _channel?.sink.close();
-    _channel = null;
+    if (_channel != null) {
+      try {
+        await _channel?.sink.close();
+        print('✅ WebSocket 连接已关闭');
+      } catch (e) {
+        print('⚠️  关闭 WebSocket 连接时出错: $e');
+      }
+      _channel = null;
+    }
 
     _eventController
         ?.add(const WebSocketEvent(WebSocketEventType.disconnected));
@@ -691,6 +712,7 @@ class WebSocketService {
 
   /// 释放资源
   void dispose() {
+    print('🔌 WebSocketService.dispose() 被调用');
     disconnect();
     _eventController?.close();
     _eventController = null;

@@ -139,13 +139,14 @@ class ConnectionState {
   ConnectionState copyWith({
     ConnectionStatus? status,
     String? error,
+    bool clearError = false,
     int? reconnectAttempts,
     DateTime? lastConnectedAt,
     bool? isTyping,
   }) {
     return ConnectionState(
       status: status ?? this.status,
-      error: error ?? this.error,
+      error: clearError ? null : (error ?? this.error),
       reconnectAttempts: reconnectAttempts ?? this.reconnectAttempts,
       lastConnectedAt: lastConnectedAt ?? this.lastConnectedAt,
       isTyping: isTyping ?? this.isTyping,

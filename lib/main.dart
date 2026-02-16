@@ -20,11 +20,57 @@ void main() async {
   );
 }
 
-class MyApp extends ConsumerWidget {
+class MyApp extends ConsumerStatefulWidget {
   const MyApp({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends ConsumerState<MyApp> with WidgetsBindingObserver {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    switch (state) {
+      case AppLifecycleState.paused:
+      case AppLifecycleState.detached:
+        // 应用进入后台或被销毁，断开所有连接
+        _disconnectAllServices();
+        break;
+      case AppLifecycleState.resumed:
+        // 应用恢复，重新连接活跃服务
+        _reconnectActiveService();
+        break;
+      default:
+        break;
+    }
+  }
+
+  void _disconnectAllServices() {
+    // 应用进入后台或被销毁时，连接会在 ChatScreen 的生命周期中处理
+    // 这里只记录日志
+    print('📱 应用进入后台/被销毁');
+  }
+
+  void _reconnectActiveService() {
+    // 应用恢复时，连接会在 ChatScreen 的生命周期中处理
+    // 这里只记录日志
+    print('📱 应用恢复前台');
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final themeState = ref.watch(providers.themeProvider);
 
     return MaterialApp(

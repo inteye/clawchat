@@ -401,7 +401,10 @@ class ChatSessionNotifier extends StateNotifier<ChatSessionState> {
 
   /// 清除错误
   void clearError() {
-    state = state.copyWith(error: null);
+    // 清除错误信息，同时保持其他状态不变
+    state = state.copyWith(
+      connectionState: state.connectionState.copyWith(clearError: true),
+    );
   }
 
   @override

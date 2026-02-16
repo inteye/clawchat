@@ -21,18 +21,43 @@ class ChatScreen extends ConsumerStatefulWidget {
   ConsumerState<ChatScreen> createState() => _ChatScreenState();
 }
 
-class _ChatScreenState extends ConsumerState<ChatScreen> {
+class _ChatScreenState extends ConsumerState<ChatScreen>
+    with WidgetsBindingObserver {
   final ScrollController _scrollController = ScrollController();
   bool _autoConnect = true;
 
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _connectIfNeeded();
       // 初始加载后滚动到底部
       _scrollToBottom();
     });
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    final serviceManager = ref.read(serviceManagerProvider);
+    if (!serviceManager.hasActiveService) return;
+
+    final activeServiceId = serviceManager.activeServiceId!;
+
+    switch (state) {
+      case AppLifecycleState.paused:
+        // 应用进入后台，断开当前服务连接
+        print('📱 应用进入后台，断开连接');
+        ref.read(chatSessionProvider(activeServiceId).notifier).disconnect();
+        break;
+      case AppLifecycleState.resumed:
+        // 应用恢复，重新连接
+        print('📱 应用恢复，重新连接');
+        ref.read(chatSessionProvider(activeServiceId).notifier).connect();
+        break;
+      default:
+        break;
+    }
   }
 
   /// 如果需要则自动连接
@@ -236,6 +261,16 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
 
   @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+
+    // 断开当前服务的连接
+    final serviceManager = ref.read(serviceManagerProvider);
+    if (serviceManager.hasActiveService) {
+      final activeServiceId = serviceManager.activeServiceId!;
+      ref.read(chatSessionProvider(activeServiceId).notifier).disconnect();
+      print('🔌 ChatScreen dispose: 断开服务连接');
+    }
+
     _scrollController.dispose();
     super.dispose();
   }
@@ -322,7 +357,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                     ),
                   ),
                   IconButton(
-                    icon: const Icon(Icons.close),
+                    icon: Icon(Icons.close, color: Colors.red.shade900),
                     onPressed: () {
                       ref
                           .read(chatSessionProvider(activeServiceId).notifier)
