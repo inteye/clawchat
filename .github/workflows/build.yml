@@ -11,6 +11,11 @@ on:
     branches:
       - main
 
+# 添加权限配置
+permissions:
+  contents: write  # 允许创建 Release 和上传文件
+  packages: write  # 允许发布包
+
 env:
   FLUTTER_VERSION: '3.19.0'
 
